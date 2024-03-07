@@ -83,7 +83,22 @@ public class ClienteDaoJDBC implements ClienteDao {
 
     @Override
     public void delete(Integer id) {
+        PreparedStatement statement = null;
+        try{
+            statement = connection.prepareStatement("DELETE FROM cliente WHERE id = ?");
 
+            statement.setInt(1, id);
+
+            int rows = statement.executeUpdate();
+
+            if(rows == 0){
+                throw new DBException("Id não encontrado!");
+            }
+        }catch (SQLException e){
+            throw new DBException(e.getMessage());
+        }finally {
+            DB.closeStatement(statement);
+        }
     }
 
     @Override

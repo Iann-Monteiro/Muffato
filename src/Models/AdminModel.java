@@ -9,7 +9,7 @@ public class AdminModel extends UsuarioModel implements UsuarioInterfaces {
     Scanner sc = new Scanner(System.in);
     protected String senha = "softfocus123";
 
-    public AdminModel(String nome, String cpf, String rg, String email, String telefone, int id) {
+    public AdminModel(String nome, String cpf, String rg, String email, String telefone, Integer id) {
         super(nome, cpf, rg, email, telefone, id);
         this.tipo = UsuarioEnums.ADMIN;
     }

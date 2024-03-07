@@ -2,7 +2,6 @@ package DaoImplJDBC;
 
 import Enums.UsuarioEnums;
 import Models.ClienteModel;
-import ModelsDao.AdminDao;
 import ModelsDao.ClienteDao;
 import db.DB;
 import db.DBException;
@@ -11,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDaoJDBC implements ClienteDao {
@@ -22,16 +22,67 @@ public class ClienteDaoJDBC implements ClienteDao {
 
     @Override
     public void insert(ClienteModel cliente) {
+        PreparedStatement statement = null;
 
+        try{
+            statement = connection.prepareStatement(
+                    "INSERT INTO cliente (nome, cpf, rg, email, telefone) " +
+                            "VALUES (?, ?, ?, ?, ?)",
+                    statement.RETURN_GENERATED_KEYS
+            );
+
+            statement.setString(1, cliente.getNome());
+            statement.setString(2, cliente.getCpf());
+            statement.setString(3, cliente.getRg());
+            statement.setString(4, cliente.getEmail());
+            statement.setString(5, cliente.getTelefone());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if(rowsAffected > 0){
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if(resultSet.next()){
+                    int id = resultSet.getInt(1);
+                    cliente.setId(id);
+                }
+                DB.closeResultSet(resultSet);
+            }else{
+                throw new DBException("Erro inesperado. Nenhuma linha foi afetada");
+            }
+
+        }catch(SQLException e) {
+            throw new DBException(e.getMessage());
+        }finally {
+            DB.closeStatement(statement);
+        }
     }
 
     @Override
     public void update(ClienteModel cliente) {
+        PreparedStatement statement = null;
 
+        try{
+            statement = connection.prepareStatement(
+                    "UPDATE cliente set nome = ?, cpf =  ?, rg = ?, email = ?, telefone=? WHERE id = ?"
+            );
+
+            statement.setString(1, cliente.getNome());
+            statement.setString(2, cliente.getCpf());
+            statement.setString(3, cliente.getRg());
+            statement.setString(4, cliente.getEmail());
+            statement.setString(5, cliente.getTelefone());
+            statement.setInt(6, cliente.getId());
+
+            statement.executeUpdate();
+        }catch(SQLException e) {
+            throw new DBException(e.getMessage());
+        }finally {
+            DB.closeStatement(statement);
+        }
     }
 
     @Override
-    public void delte(ClienteModel cliente) {
+    public void delete(Integer id) {
 
     }
 
@@ -49,16 +100,7 @@ public class ClienteDaoJDBC implements ClienteDao {
             resultSet = statement.executeQuery();
 
             if(resultSet.next()){
-                ClienteModel cliente = new ClienteModel();
-                cliente.setId(resultSet.getInt("id"));
-                cliente.setCpf(resultSet.getString("cpf"));
-                cliente.setEmail(resultSet.getString("email"));
-                cliente.setNome(resultSet.getString("nome"));
-                cliente.setRg(resultSet.getString("rg"));
-                cliente.setTelefone(resultSet.getString("telefone"));
-                cliente.setTipo(UsuarioEnums.CLIENTE);
-
-                return cliente;
+                return  instantiateCliente(resultSet);
             }
 
             return null;
@@ -70,8 +112,43 @@ public class ClienteDaoJDBC implements ClienteDao {
         }
     }
 
+    private ClienteModel instantiateCliente(ResultSet resultSet) throws SQLException {
+        ClienteModel cliente = new ClienteModel();
+        cliente.setId(resultSet.getInt("id"));
+        cliente.setCpf(resultSet.getString("cpf"));
+        cliente.setEmail(resultSet.getString("email"));
+        cliente.setNome(resultSet.getString("nome"));
+        cliente.setRg(resultSet.getString("rg"));
+        cliente.setTelefone(resultSet.getString("telefone"));
+        cliente.setTipo(UsuarioEnums.CLIENTE);
+
+        return cliente;
+    }
+
     @Override
     public List<ClienteModel> findAll() {
-        return null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            statement = connection.prepareStatement("SELECT cliente.* FROM cliente ORDER BY nome");
+
+            resultSet = statement.executeQuery();
+
+            List<ClienteModel> list = new ArrayList<>();
+            while(resultSet.next()){
+                ClienteModel cliente = instantiateCliente(resultSet);
+                list.add(cliente);
+            }
+
+            return list;
+
+        }catch(SQLException e){
+            throw new DBException(e.getMessage());
+        }finally {
+            DB.closeResultSet(resultSet);
+            DB.closeStatement(statement);
+        }
+
     }
 }

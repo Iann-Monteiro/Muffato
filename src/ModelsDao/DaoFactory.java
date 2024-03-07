@@ -7,8 +7,8 @@ import java.sql.*;
 
 
 public class DaoFactory {
-    public static AdminDao createAdminDao(){
-        return new AdminDaoJDBC();
+    public static AdminDao createAdminDao() throws SQLException {
+        return new AdminDaoJDBC(DB.getConnection());
     }
 
     public static ClienteDao createClienteDao() throws SQLException {

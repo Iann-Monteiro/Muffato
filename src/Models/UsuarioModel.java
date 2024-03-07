@@ -8,10 +8,10 @@ public class UsuarioModel {
     private String rg;
     private String email;
     private String telefone;
-    private int id;
+    private Integer id;
     protected UsuarioEnums tipo;
 
-    public UsuarioModel(String nome, String cpf, String rg, String email, String telefone, int id) {
+    public UsuarioModel(String nome, String cpf, String rg, String email, String telefone, Integer id) {
         this.nome = nome;
         this.cpf = cpf;
         this.rg = rg;

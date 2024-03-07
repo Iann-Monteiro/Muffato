@@ -89,9 +89,9 @@ public class ClienteDaoJDBC implements ClienteDao {
 
             statement.setInt(1, id);
 
-            int rows = statement.executeUpdate();
+            int row = statement.executeUpdate();
 
-            if(rows == 0){
+            if(row == 0){
                 throw new DBException("Id não encontrado!");
             }
         }catch (SQLException e){

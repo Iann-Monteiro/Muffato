@@ -79,14 +79,7 @@ public class UsuarioModel {
 
     @Override
     public String toString() {
-        return "UsuarioModel{" +
-                "nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", rg='" + rg + '\'' +
-                ", email='" + email + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", id=" + id +
-                ", tipo=" + tipo +
-                '}';
+        return "Nome: "+getNome()+" Cpf: "+getCpf()+" Rg: "+getRg()+" Email: "+getEmail()+
+                " Telefone: "+getTelefone()+" Id: "+getId()+" Tipo: "+this.tipo+"\n";
     }
 }

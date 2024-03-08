@@ -4,7 +4,7 @@
 
 :root {
     --cor02: #ff2121;
-    --cor03: #fa2948;
+    --cor03: #fad029;
     --cor04: #233545;
     --cor05: #FAFAFA;
 }
@@ -47,7 +47,7 @@ p {
   width: 100px;
   height: 2px;
   margin-top: 10px;
-  background: #FA9529;
+  background: #fa4f29;
 }
 
 body, html {
